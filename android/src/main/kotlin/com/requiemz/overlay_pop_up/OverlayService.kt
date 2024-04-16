@@ -3,10 +3,13 @@ package com.requiemz.overlay_pop_up
 import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -21,7 +24,6 @@ import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.JSONMessageCodec
 import io.flutter.plugin.common.MethodChannel
-
 
 class OverlayService : Service(), BasicMessageChannel.MessageHandler<Any?>, View.OnTouchListener {
     companion object {
@@ -66,8 +68,8 @@ class OverlayService : Service(), BasicMessageChannel.MessageHandler<Any?>, View
         flutterView.setOnTouchListener(this)
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager?
         val windowConfig = WindowManager.LayoutParams(
-            PopUp.width,
-            PopUp.height,
+            dpToPx(PopUp.width),
+            dpToPx(PopUp.height),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
             if (PopUp.backgroundBehavior == 1) WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN else
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -80,10 +82,19 @@ class OverlayService : Service(), BasicMessageChannel.MessageHandler<Any?>, View
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         }
         windowConfig.gravity = PopUp.verticalAlignment or PopUp.horizontalAlignment
-        windowConfig.screenOrientation = PopUp.screenOrientation
+      //  windowConfig.screenOrientation = PopUp.screenOrientation
         windowManager!!.addView(flutterView, windowConfig)
+
         loadLastPosition()
         isActive = true
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            (dp.toString() + "").toFloat(),
+            mResources?.displayMetrics
+        ).toInt()
     }
 
     override fun onDestroy() {

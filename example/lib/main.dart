@@ -47,7 +47,6 @@ class _MyAppState extends State<MyApp> {
                       isActive = await OverlayPopUp.showOverlay(
                         width: 300,
                         height: 350,
-                        screenOrientation: ScreenOrientation.portrait,
                         closeWhenTapBackButton: true,
                         isDraggable: true,
                       );
@@ -82,7 +81,7 @@ class _MyAppState extends State<MyApp> {
               MaterialButton(
                 onPressed: () async {
                   if (await OverlayPopUp.isActive()) {
-                    await OverlayPopUp.updateOverlaySize(width: 500, height: 500);
+                    await OverlayPopUp.updateOverlaySize(width: 400, height: 400);
                   }
                 },
                 color: Colors.red[900],
@@ -130,6 +129,7 @@ class OverlayWidget extends StatelessWidget {
       color: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.all(15),
+        color: Colors.yellow,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
